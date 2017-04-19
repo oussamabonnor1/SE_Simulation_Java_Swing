@@ -1,5 +1,7 @@
 package com.company;
 
+import javax.swing.*;
+
 /**
  * Created by Oussama on 11/04/2017.
  */
@@ -9,6 +11,7 @@ public class Processus {
     private int priority;
     private int name;
     private boolean passed;
+
 
     public int getName() {
         return name;
