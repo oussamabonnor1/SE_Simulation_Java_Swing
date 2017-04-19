@@ -14,10 +14,10 @@ import javax.swing.border.LineBorder;
 public class Frame extends JFrame {
 
     public JPanel contentPane;
-    public JTextField textField;
-    public JTextField textField_1;
-    public JTextField textField_2;
-    public JTextField textField_3;
+    public JTextField arrivalTimeField;
+    public JTextField cpuTimeField;
+    public JTextField priorityTextField;
+    public JTextField quantumField;
     public JTable table;
     int count;
     int choiceOfAlgo;
@@ -143,33 +143,33 @@ public class Frame extends JFrame {
         lblPriorit.setBounds(382, 95, 76, 25);
         panel.add(lblPriorit);
 
-        textField = new JTextField();
-        textField.setBounds(139, 136, 89, 22);
-        panel.add(textField);
-        textField.setColumns(10);
+        arrivalTimeField = new JTextField();
+        arrivalTimeField.setBounds(139, 136, 89, 22);
+        panel.add(arrivalTimeField);
+        arrivalTimeField.setColumns(10);
 
-        textField_1 = new JTextField();
-        textField_1.setColumns(10);
-        textField_1.setBounds(271, 137, 76, 22);
-        panel.add(textField_1);
+        cpuTimeField = new JTextField();
+        cpuTimeField.setColumns(10);
+        cpuTimeField.setBounds(271, 137, 76, 22);
+        panel.add(cpuTimeField);
 
-        textField_2 = new JTextField();
-        textField_2.setColumns(10);
-        textField_2.setBounds(370, 136, 76, 22);
-        panel.add(textField_2);
+        priorityTextField = new JTextField();
+        priorityTextField.setColumns(10);
+        priorityTextField.setBounds(370, 136, 76, 22);
+        panel.add(priorityTextField);
 
         JButton btnNewButton = new JButton("Ajouter a la liste");
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 DefaultTableModel model = (DefaultTableModel) table.getModel();
                 ++count;
-                String[] a = {String.valueOf(count), textField.getText(), textField_1.getText(), textField_2.getText()};
+                String[] a = {String.valueOf(count), arrivalTimeField.getText(), cpuTimeField.getText(), priorityTextField.getText()};
 
                 model.addRow(a);
 
-                textField.setText("");
-                textField_1.setText("");
-                textField_2.setText("");
+                arrivalTimeField.setText("");
+                cpuTimeField.setText("");
+                priorityTextField.setText("");
             }
         });
         btnNewButton.setBounds(180, 186, 175, 25);
@@ -180,10 +180,10 @@ public class Frame extends JFrame {
         lblQuantum.setBounds(40, 360, 87, 25);
         panel.add(lblQuantum);
 
-        textField_3 = new JTextField();
-        textField_3.setBounds(205, 362, 116, 22);
-        panel.add(textField_3);
-        textField_3.setColumns(10);
+        quantumField = new JTextField();
+        quantumField.setBounds(205, 362, 116, 22);
+        panel.add(quantumField);
+        quantumField.setColumns(10);
 
         table = new JTable();
         table.setBackground(SystemColor.inactiveCaptionBorder);
@@ -213,7 +213,7 @@ public class Frame extends JFrame {
                 for (int i = 0; i < table.getRowCount(); i++) {
                     DefaultTableModel model = (DefaultTableModel) table.getModel();
 
-                    Processus p = new Processus(i + 1, Integer.valueOf((String) model.getValueAt(i, 0)), Integer.valueOf((String) model.getValueAt(i, 1)), Integer.valueOf((String) model.getValueAt(i, 2)), false);
+                    Processus p = new Processus(i + 1, Integer.valueOf((String) model.getValueAt(i, 1)), Integer.valueOf((String) model.getValueAt(i, 2)), Integer.valueOf((String) model.getValueAt(i, 3)), false);
 
                     //Processus p = new Processus(i + 1, r.nextInt(4), r.nextInt(5) + 1, r.nextInt(3), false);
                     System.out.println("Processus " + p.getName() + " arrival time " + p.getArriveTime() + " cpu " + p.getCpuTime() + " Priority " + p.getPriority());
@@ -221,31 +221,10 @@ public class Frame extends JFrame {
                 }
                 System.out.println();
 
-                Algorithmes algorithmes = new Algorithmes(file);
-                switch (choiceOfAlgo) {
-                    case 0:
-                        System.out.println("first to come");
-                        algorithmes.firstComeFirstServe(algorithmes.file);
-                        break;
-                    case 1:
-                        System.out.println("shortest job");
-                        algorithmes.shortJobFirst(algorithmes.file);
-                        break;
-                    case 2:
-                        System.out.println("round robin");
-                        algorithmes.roundRobinNonPreemptif(algorithmes.file, Integer.parseInt(textField_3.getText()));
-                        break;
-                    case 3:
-                        System.out.println("priority");
-                        algorithmes.priorityNonPremptif(algorithmes.file);
-                        break;
-                    default:
-                        System.out.println("default");
-                        algorithmes.firstComeFirstServe(algorithmes.file);
-                        break;
-                }
-
-
+                executionFrame executionFrame = new executionFrame(file,choiceOfAlgo,Integer.parseInt(quantumField.getText()));
+                executionFrame.makeStuffWork();
+                setVisible(false);
+                executionFrame.setVisible(true);
             }
         });
 
