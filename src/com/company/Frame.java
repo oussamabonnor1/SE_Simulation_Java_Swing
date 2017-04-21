@@ -222,7 +222,6 @@ public class Frame extends JFrame {
                 System.out.println();
 
                 executionFrame executionFrame = new executionFrame(file,choiceOfAlgo,Integer.parseInt(quantumField.getText()));
-                executionFrame.makeStuffWork();
                 setVisible(false);
                 executionFrame.setVisible(true);
             }

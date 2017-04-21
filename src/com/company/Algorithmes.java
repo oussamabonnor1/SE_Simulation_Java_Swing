@@ -1,6 +1,9 @@
 package com.company;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
+import java.util.Timer;
 
 /**
  * Created by Oussama on 19/04/2017.
@@ -12,17 +15,25 @@ public class Algorithmes {
         this.file = file;
     }
 
-    protected void choice(){
-        firstComeFirstServe(file);
-    }
-
-    protected void firstComeFirstServe(ArrayList<Processus> file) {
+    protected void firstComeFirstServe(ArrayList<Processus> file, executionFrame frame) {
         int currentTime = 0;
         int numberOfProcess = file.size();
         ArrayList<Processus> waitingList = new ArrayList<>();
 
+        DefaultTableModel waitingModel = (DefaultTableModel) frame.waitingList.getModel();
+        DefaultTableModel processingModel = (DefaultTableModel) frame.processingList.getModel();
+
         while (numberOfProcess > 0) {
 
+            frame.getContentPane().repaint(20, 12, 512, 166, 16);
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            frame.lblTempsActuel.setText("Temps actuel: " + currentTime);
             System.out.println("cuurent time: " + currentTime);
             System.out.println("process filling phase:");
 
@@ -32,6 +43,10 @@ public class Algorithmes {
                     waitingList.add(file.get(i));
                     file.get(i).setPassed(true);
                     System.out.println("the processus " + (i + 1) + " was added to the waiting list");
+                    Object[] a = {file.get(i).getName(), file.get(i).getArriveTime(), file.get(i).getCpuTime(), file.get(i).getPriority()};
+                    waitingModel.addRow(a);
+
+                    //working on synchronisation
                 }
             }
             System.out.println();

@@ -5,6 +5,8 @@ package com.company;
  */
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -13,13 +15,13 @@ import javax.swing.table.DefaultTableModel;
 
 public class executionFrame extends JFrame {
 
-
+    public JLabel lblTempsActuel;
     public JPanel contentPane;
     public int choiceOfAlgo;
     public int quantum;
-    private JTable table;
-    private JTable table_1;
-    private JTable table_2;
+    public JTable originalList;
+    public JTable waitingList;
+    public JTable processingList;
     public static ArrayList<Processus> file;
 
     /**
@@ -48,7 +50,7 @@ public class executionFrame extends JFrame {
         switch (choiceOfAlgo) {
             case 0:
                 System.out.println("first to come");
-                algorithmes.firstComeFirstServe(algorithmes.file);
+                algorithmes.firstComeFirstServe(algorithmes.file, this);
                 break;
             case 1:
                 System.out.println("shortest job");
@@ -64,7 +66,7 @@ public class executionFrame extends JFrame {
                 break;
             default:
                 System.out.println("default");
-                algorithmes.firstComeFirstServe(algorithmes.file);
+                algorithmes.firstComeFirstServe(algorithmes.file, this);
                 break;
         }
 
@@ -86,38 +88,38 @@ public class executionFrame extends JFrame {
         contentPane.add(panel, BorderLayout.CENTER);
         panel.setLayout(null);
 
-        table = new JTable();
-        table.setModel(new DefaultTableModel(
+        originalList = new JTable();
+        originalList.setModel(new DefaultTableModel(
                 new Object[][]{
                 },
                 new String[]{
                         "New column"
                 }
         ));
-        table.setBounds(12, 67, 123, 200);
-        panel.add(table);
+        originalList.setBounds(12, 67, 123, 200);
+        panel.add(originalList);
 
-        table_1 = new JTable();
-        table_1.setModel(new DefaultTableModel(
+        waitingList = new JTable();
+        waitingList.setModel(new DefaultTableModel(
                 new Object[][]{
                 },
                 new String[]{
                         "New column", "New column", "New column", "New column", "New column"
                 }
         ));
-        table_1.setBounds(225, 67, 689, 174);
-        panel.add(table_1);
+        waitingList.setBounds(225, 67, 689, 174);
+        panel.add(waitingList);
 
-        table_2 = new JTable();
-        table_2.setModel(new DefaultTableModel(
+        processingList = new JTable();
+        processingList.setModel(new DefaultTableModel(
                 new Object[][]{
                 },
                 new String[]{
                         "New column", "New column", "New column", "New column", "New column"
                 }
         ));
-        table_2.setBounds(225, 283, 689, 200);
-        panel.add(table_2);
+        processingList.setBounds(225, 283, 689, 200);
+        panel.add(processingList);
 
         JLabel lblListeTotal = new JLabel("Liste Total");
         lblListeTotal.setHorizontalAlignment(SwingConstants.CENTER);
@@ -136,17 +138,30 @@ public class executionFrame extends JFrame {
         lblCpu.setBounds(499, 254, 123, 16);
         panel.add(lblCpu);
 
+        JButton btnCommencez = new JButton("Commencez");
+        btnCommencez.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                makeStuffWork();
+            }
+        });
+        btnCommencez.setBounds(225, 515, 103, 25);
+        panel.add(btnCommencez);
+
         JButton btnAccelrer = new JButton("Accel\u00E9rer");
         btnAccelrer.setBounds(817, 515, 97, 25);
         panel.add(btnAccelrer);
 
-        JLabel lblTempsActuel = new JLabel("Temps actuel:");
+        lblTempsActuel = new JLabel("Temps actuel:");
         lblTempsActuel.setHorizontalAlignment(SwingConstants.CENTER);
         lblTempsActuel.setFont(new Font("Tahoma", Font.PLAIN, 15));
         lblTempsActuel.setBounds(12, 518, 166, 16);
         panel.add(lblTempsActuel);
 
-
+         DefaultTableModel model = (DefaultTableModel) originalList.getModel();
+        for (int i = 0; i < file.size(); i++) {
+            Object[] a = {"Processus " +file.get(i).getName()};
+            model.addRow(a);
+        }
     }
 }
 
