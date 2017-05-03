@@ -53,6 +53,17 @@ public class Frame extends JFrame {
         menuBar.add(mnDonnes);
 
         JMenuItem mntmDonnesAlatoires = new JMenuItem("Donn\u00E9es Al\u00E9atoires");
+        mntmDonnesAlatoires.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                Random r = new Random();
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+                for (int i = 0; i < 5; i++) {
+                    Processus p = new Processus(i + 1, r.nextInt(4), r.nextInt(5) + 1, r.nextInt(3), false);
+                    String[] a = {String.valueOf(p.getName()), "" + p.getArriveTime(), "" + p.getCpuTime(), "" + p.getPriority()};
+                    model.addRow(a);
+                }
+            }
+        });
         mnDonnes.add(mntmDonnesAlatoires);
 
         JMenuItem mntmNewMenuItem = new JMenuItem("Donn\u00E9es a partir de fichier");
@@ -209,18 +220,21 @@ public class Frame extends JFrame {
         btnCommencez.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 ArrayList<Processus> file = new ArrayList<>();
-                Random r = new Random();
 
                 for (int i = 0; i < table.getRowCount(); i++) {
                     DefaultTableModel model = (DefaultTableModel) table.getModel();
 
                     Processus p = new Processus(i + 1, Integer.valueOf((String) model.getValueAt(i, 1)), Integer.valueOf((String) model.getValueAt(i, 2)), Integer.valueOf((String) model.getValueAt(i, 3)), false);
 
-                    //Processus p = new Processus(i + 1, r.nextInt(4), r.nextInt(5) + 1, r.nextInt(3), false);
+
                     System.out.println("Processus " + p.getName() + " arrival time " + p.getArriveTime() + " cpu " + p.getCpuTime() + " Priority " + p.getPriority());
                     file.add(p);
                 }
                 System.out.println();
+
+                for (int i = 0; i < file.size(); i++) {
+                    System.out.println(file.get(i).getName());
+                }
 
                 executionFrame executionFrame = new executionFrame(file, choiceOfAlgo, Integer.parseInt(quantumField.getText()), chckbxmntmPreemptivit.getState());
                 setVisible(false);

@@ -64,7 +64,7 @@ public class executionFrame extends JFrame {
                 break;
             case 2:
                 System.out.println("round robin");
-                algorithmes.roundRobinNonPreemptif(algorithmes.file, quantum);
+                algorithmes.roundRobinNonPreemptif(algorithmes.file, quantum,this);
                 break;
             case 3:
                 if (preemptif) {
