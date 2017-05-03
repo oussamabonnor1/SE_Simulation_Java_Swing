@@ -20,6 +20,7 @@ public class executionFrame extends JFrame {
     public JTable waitingTable;
     public JTable processingTable;
     public JPanel contentPane;
+    public JLabel lblAlgorithmeUtilis;
     public int choiceOfAlgo;
     public int quantum;
     public static ArrayList<Processus> file;
@@ -111,7 +112,7 @@ public class executionFrame extends JFrame {
         ));
 
 
-        waitingTable.setBounds(32, 67, 439, 427);
+        waitingTable.setBounds(32, 67, 439, 300);
         panel.add(waitingTable);
 
 
@@ -123,20 +124,10 @@ public class executionFrame extends JFrame {
                         "nom Processus", "temps début", "temps fin"
                 }
         ));
-        processingTable.setBounds(518, 67, 439, 427);
+        processingTable.setBounds(518, 67, 439, 300);
         panel.add(processingTable);
 
-        JButton btnAccelrer = new JButton("Accel\u00E9rer");
-        btnAccelrer.setBounds(817, 515, 97, 25);
-        panel.add(btnAccelrer);
-
-        JLabel lblTempsActuel = new JLabel("Temps actuel:");
-        lblTempsActuel.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTempsActuel.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblTempsActuel.setBounds(12, 518, 166, 16);
-        panel.add(lblTempsActuel);
-
-        JButton btnCommencez = new JButton("Commencez");
+        JButton btnCommencez = new JButton("Commencer");
         btnCommencez.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
 
@@ -150,8 +141,19 @@ public class executionFrame extends JFrame {
                 makeStuffWork();
             }
         });
-        btnCommencez.setBounds(225, 515, 103, 25);
+        btnCommencez.setBounds(828, 515, 103, 25);
         panel.add(btnCommencez);
+
+        JButton btnRetournez = new JButton("Retourner");
+        btnRetournez.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Frame frame = new Frame();
+                frame.setVisible(true);
+                executionFrame.this.setVisible(false);
+            }
+        });
+        btnRetournez.setBounds(685, 515, 103, 25);
+        panel.add(btnRetournez);
 
         JLabel lblListeDattente = new JLabel("Liste d'attente");
         lblListeDattente.setFont(new Font("Tahoma", Font.BOLD, 16));
@@ -214,6 +216,38 @@ public class executionFrame extends JFrame {
         lblTempsDeFin.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblTempsDeFin.setBounds(828, 47, 110, 16);
         panel.add(lblTempsDeFin);
+
+        String algoChosen;
+        switch (choiceOfAlgo) {
+            case 0:
+                algoChosen = "First In First Out (FIFO)";
+                break;
+            case 1:
+                if (preemptif) {
+                    algoChosen = "Shortest Job First Preemptif (SJF)";
+                } else {
+                    algoChosen = "Shortest Job First non Preemptif (SJF)";
+                }
+                break;
+            case 2:
+                algoChosen = "Round Robin (RR)";
+                break;
+            case 3:
+                if (preemptif) {
+                    algoChosen = "Priority Preemptif";
+                } else {
+                    algoChosen = "Priority non Preemptif";
+                }
+                break;
+            default:
+                algoChosen = "First In First Out (FIFO)";
+                break;
+        }
+
+        lblAlgorithmeUtilis = new JLabel("Algorithme utilis\u00E9: " + algoChosen);
+        lblAlgorithmeUtilis.setFont(new Font("Tahoma", Font.BOLD, 16));
+        lblAlgorithmeUtilis.setBounds(32, 514, 500, 25);
+        panel.add(lblAlgorithmeUtilis);
     }
 }
 
