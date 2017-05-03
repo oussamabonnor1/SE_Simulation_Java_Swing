@@ -1,6 +1,5 @@
 package com.company;
 
-import javax.swing.*;
 
 /**
  * Created by Oussama on 11/04/2017.
@@ -15,10 +14,6 @@ public class Processus {
 
     public int getName() {
         return name;
-    }
-
-    public void setName(int name) {
-        this.name = name;
     }
 
     public Processus(int name, int arriveTime, int cpuTime, int priority, boolean passed) {
@@ -41,9 +36,6 @@ public class Processus {
         return arriveTime;
     }
 
-    public void setArriveTime(int arriveTime) {
-        this.arriveTime = arriveTime;
-    }
 
     public int getCpuTime() {
         return cpuTime;
@@ -56,11 +48,6 @@ public class Processus {
     public int getPriority() {
         return priority;
     }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
 
     public void processing(int timeToProcess) {
         setCpuTime(getCpuTime() - timeToProcess);

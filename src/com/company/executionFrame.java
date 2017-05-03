@@ -7,7 +7,6 @@ package com.company;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.AdjustmentListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -16,7 +15,6 @@ import javax.swing.table.DefaultTableModel;
 
 public class executionFrame extends JFrame {
 
-    private JScrollPane jScrollPane1;
     public JTable waitingTable;
     public JTable processingTable;
     public JPanel contentPane;
