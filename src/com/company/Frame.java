@@ -18,6 +18,7 @@ public class Frame extends JFrame {
     public JTextField cpuTimeField;
     public JTextField priorityTextField;
     public JTextField quantumField;
+    JCheckBoxMenuItem chckbxmntmAvecPriority;
     public JTable table;
     int count;
     int choiceOfAlgo;
@@ -104,7 +105,7 @@ public class Frame extends JFrame {
         });
         mnAlgorithmes.add(mntmPriority);
 
-        JCheckBoxMenuItem chckbxmntmAvecPriority = new JCheckBoxMenuItem("Avec priority");
+        chckbxmntmAvecPriority = new JCheckBoxMenuItem("Avec priority");
         mnOptions.add(chckbxmntmAvecPriority);
 
         JCheckBoxMenuItem chckbxmntmPreemptivit = new JCheckBoxMenuItem("Preemptivit\u00E9");
@@ -221,7 +222,7 @@ public class Frame extends JFrame {
                 }
                 System.out.println();
 
-                executionFrame executionFrame = new executionFrame(file,choiceOfAlgo,Integer.parseInt(quantumField.getText()));
+                executionFrame executionFrame = new executionFrame(file, choiceOfAlgo, Integer.parseInt(quantumField.getText()), chckbxmntmPreemptivit.getState());
                 setVisible(false);
                 executionFrame.setVisible(true);
             }

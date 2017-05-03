@@ -1,9 +1,7 @@
 package com.company;
 
-import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
-import java.util.Timer;
 
 /**
  * Created by Oussama on 19/04/2017.
@@ -20,21 +18,11 @@ public class Algorithmes {
         int numberOfProcess = file.size();
         ArrayList<Processus> waitingList = new ArrayList<>();
 
-        DefaultTableModel waitingModel = (DefaultTableModel) frame.waitingList.getModel();
-        DefaultTableModel processingModel = (DefaultTableModel) frame.processingList.getModel();
+        DefaultTableModel processingModel = (DefaultTableModel) frame.processingTable.getModel();
 
         while (numberOfProcess > 0) {
 
-            frame.getContentPane().repaint(20, 12, 512, 166, 16);
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            frame.lblTempsActuel.setText("Temps actuel: " + currentTime);
-            System.out.println("cuurent time: " + currentTime);
+            System.out.println("current time: " + currentTime);
             System.out.println("process filling phase:");
 
             for (int i = 0; i < file.size(); i++) {
@@ -43,10 +31,8 @@ public class Algorithmes {
                     waitingList.add(file.get(i));
                     file.get(i).setPassed(true);
                     System.out.println("the processus " + (i + 1) + " was added to the waiting list");
-                    Object[] a = {file.get(i).getName(), file.get(i).getArriveTime(), file.get(i).getCpuTime(), file.get(i).getPriority()};
-                    waitingModel.addRow(a);
-
-                    //working on synchronisation
+                    String[] a = {"P " + String.valueOf(file.get(i).getName()), String.valueOf(currentTime)};
+                    processingModel.addRow(a);
                 }
             }
             System.out.println();
@@ -57,6 +43,14 @@ public class Algorithmes {
                 currentTime += waitingList.get(0).getCpuTime();
                 waitingList.get(0).processing(waitingList.get(0).getCpuTime());
                 System.out.println("processus " + waitingList.get(0).getName() + " left the system");
+
+                int indexOfProcessLeaving = 0;
+                while (waitingList.get(0).getName() != file.get(indexOfProcessLeaving).getName()) {
+                    ++indexOfProcessLeaving;
+                }
+
+                processingModel.setValueAt("" + currentTime, indexOfProcessLeaving, 2);
+
                 waitingList.remove(0);
                 --numberOfProcess;
             } else {
@@ -82,15 +76,18 @@ public class Algorithmes {
                 }
             }
             System.out.println();
+            frame.repaint();
         }
         //temps que la list des processus n est pas vide (il y a des processus dans le tableau
 
     }
 
-    protected void shortJobFirst(ArrayList<Processus> file) {
+    protected void shortJobFirstPreemptif(ArrayList<Processus> file, executionFrame frame) {
         int currentTime = 0;
         int numberOfProcess = file.size();
         ArrayList<Processus> waitingList = new ArrayList<>();
+
+        DefaultTableModel processingModel = (DefaultTableModel) frame.processingTable.getModel();
 
         while (numberOfProcess > 0) {
 
@@ -104,6 +101,9 @@ public class Algorithmes {
                     System.out.println("the processus " + file.get(i).getName() + " was added to the waiting list");
                     waitingList.add(file.get(i));
                     file.get(i).setPassed(true);
+
+                    String[] a = {"P " + String.valueOf(file.get(i).getName()), String.valueOf(currentTime)};
+                    processingModel.addRow(a);
                 }
             }
             System.out.println();
@@ -124,9 +124,17 @@ public class Algorithmes {
                 waitingList.get(processusToPass).processing(1);
 
                 if (waitingList.get(processusToPass).getCpuTime() <= 0) {
+
+                    int indexOfProcessLeaving = 0;
+                    while (waitingList.get(processusToPass).getName() != file.get(indexOfProcessLeaving).getName()) {
+                        ++indexOfProcessLeaving;
+                    }
+
                     System.out.println("processus " + waitingList.get(processusToPass).getName() + " left the system");
                     waitingList.remove(processusToPass);
                     --numberOfProcess;
+
+                    processingModel.setValueAt("" + currentTime, indexOfProcessLeaving, 2);
                 }
                 ++currentTime;
 
@@ -157,11 +165,12 @@ public class Algorithmes {
 
     }
 
-    protected void priorityNonPremptif(ArrayList<Processus> file) {
+    protected void shortJobFirstNoPreemptif(ArrayList<Processus> file, executionFrame frame) {
         int currentTime = 0;
         int numberOfProcess = file.size();
-
         ArrayList<Processus> waitingList = new ArrayList<>();
+
+        DefaultTableModel processingModel = (DefaultTableModel) frame.processingTable.getModel();
 
         while (numberOfProcess > 0) {
 
@@ -175,6 +184,94 @@ public class Algorithmes {
                     System.out.println("the processus " + file.get(i).getName() + " was added to the waiting list");
                     waitingList.add(file.get(i));
                     file.get(i).setPassed(true);
+                    String[] a = {"P " + String.valueOf(file.get(i).getName()), String.valueOf(currentTime)};
+                    processingModel.addRow(a);
+                }
+            }
+            System.out.println();
+
+            System.out.println("process working phase:");
+            if (waitingList.size() > 0) {
+                int processusToPass = 0;
+                int shortestTime = waitingList.get(0).getCpuTime();
+
+                for (int i = 0; i < waitingList.size(); i++) {
+                    if (waitingList.get(i).getCpuTime() < shortestTime) {
+                        processusToPass = i;
+                        shortestTime = waitingList.get(i).getCpuTime();
+                    }
+                }
+
+                currentTime += (waitingList.get(processusToPass).getCpuTime());
+                System.out.println("processus " + waitingList.get(processusToPass).getName() + " is being processed...");
+                waitingList.get(processusToPass).processing(waitingList.get(processusToPass).getCpuTime());
+
+                if (waitingList.get(processusToPass).getCpuTime() <= 0) {
+
+                    int indexOfProcessLeaving = 0;
+                    while (waitingList.get(0).getName() != file.get(indexOfProcessLeaving).getName()) {
+                        ++indexOfProcessLeaving;
+                    }
+
+                    System.out.println("processus " + waitingList.get(processusToPass).getName() + " left the system");
+                    waitingList.remove(processusToPass);
+                    --numberOfProcess;
+
+                    processingModel.setValueAt("" + currentTime, indexOfProcessLeaving, 2);
+
+                }
+
+            } else {
+                System.out.println("no Processus are waiting");
+                ++currentTime;
+            }
+            //---------
+            System.out.println();
+
+            if (file.size() > 0) {
+                System.out.println("remaining processes: ");
+                boolean check = false;
+
+                for (int i = 0; i < file.size(); i++) {
+                    if (!file.get(i).isPassed()) {
+                        System.out.println("Processus " + file.get(i).getName());
+                        check = true;
+                    }
+                }
+
+                if (!check) {
+                    System.out.println("No Proceses remained");
+                }
+            }
+            System.out.println();
+        }
+
+    }
+
+
+    protected void priorityNonPremptif(ArrayList<Processus> file, executionFrame frame) {
+        int currentTime = 0;
+        int numberOfProcess = file.size();
+
+        ArrayList<Processus> waitingList = new ArrayList<>();
+
+        DefaultTableModel processingModel = (DefaultTableModel) frame.processingTable.getModel();
+
+        while (numberOfProcess > 0) {
+
+            System.out.println("current time: " + currentTime);
+            System.out.println();
+            System.out.println("process filling phase:");
+
+            for (int i = 0; i < file.size(); i++) {
+                //if the processus are arriving
+                if (file.get(i).getArriveTime() <= currentTime && !file.get(i).isPassed()) {
+                    System.out.println("the processus " + file.get(i).getName() + " was added to the waiting list");
+                    waitingList.add(file.get(i));
+                    file.get(i).setPassed(true);
+                    String[] a = {"P " + String.valueOf(file.get(i).getName()), String.valueOf(currentTime)};
+                    processingModel.addRow(a);
+
                 }
             }
 
@@ -195,6 +292,13 @@ public class Algorithmes {
                 currentTime += waitingList.get(processusToPass).getCpuTime();
                 System.out.println("processus " + waitingList.get(processusToPass).getName() + " is being processed...");
                 waitingList.get(processusToPass).processing(waitingList.get(processusToPass).getCpuTime());
+
+                int indexOfProcessLeaving = 0;
+                while (waitingList.get(processusToPass).getName() != file.get(indexOfProcessLeaving).getName()) {
+                    ++indexOfProcessLeaving;
+                }
+
+                processingModel.setValueAt("" + currentTime, indexOfProcessLeaving, 2);
 
                 System.out.println("processus " + waitingList.get(processusToPass).getName() + " left the system");
                 --numberOfProcess;
@@ -228,9 +332,11 @@ public class Algorithmes {
 
     }
 
-    protected void roundRobinNonPreemptif(ArrayList<Processus> file, int quantum) {
+    protected void priorityPremptif(ArrayList<Processus> file, executionFrame frame) {
         int currentTime = 0;
         int numberOfProcess = file.size();
+
+        DefaultTableModel processingModel = (DefaultTableModel) frame.processingTable.getModel();
 
         ArrayList<Processus> waitingList = new ArrayList<>();
 
@@ -246,6 +352,93 @@ public class Algorithmes {
                     System.out.println("the processus " + file.get(i).getName() + " was added to the waiting list");
                     waitingList.add(file.get(i));
                     file.get(i).setPassed(true);
+                    String[] a = {"P " + String.valueOf(file.get(i).getName()), String.valueOf(currentTime)};
+                    processingModel.addRow(a);
+                }
+            }
+
+            System.out.println();
+
+            System.out.println("process working phase:");
+            if (waitingList.size() > 0) {
+                int processusToPass = 0;
+                int lowestPriority = waitingList.get(0).getPriority();
+
+                for (int i = 0; i < waitingList.size(); i++) {
+                    if (waitingList.get(i).getPriority() > lowestPriority) {
+                        processusToPass = i;
+                        lowestPriority = waitingList.get(i).getCpuTime();
+                    }
+                }
+
+                ++currentTime;
+                System.out.println("processus " + waitingList.get(processusToPass).getName() + " is being processed...");
+                waitingList.get(processusToPass).processing(1);
+
+                if (waitingList.get(processusToPass).getCpuTime() <= 0) {
+                    int indexOfProcessLeaving = 0;
+                    while (waitingList.get(processusToPass).getName() != file.get(indexOfProcessLeaving).getName()) {
+                        ++indexOfProcessLeaving;
+                    }
+
+                    processingModel.setValueAt("" + currentTime, indexOfProcessLeaving, 2);
+
+                    System.out.println("processus " + waitingList.get(processusToPass).getName() + " left the system");
+                    waitingList.remove(processusToPass);
+                    --numberOfProcess;
+                }
+
+            } else {
+                System.out.println("No processes available");
+                currentTime++;
+            }
+
+            //---------
+            System.out.println();
+
+            if (file.size() > 0) {
+                System.out.println("remaining processes: ");
+                boolean check = false;
+
+                for (int i = 0; i < file.size(); i++) {
+                    if (!file.get(i).isPassed()) {
+                        System.out.println("Processus " + file.get(i).getName());
+                        check = true;
+                    }
+                }
+
+                if (!check) {
+                    System.out.println("No Proceses remained");
+                }
+            }
+            System.out.println();
+        }
+
+    }
+
+
+    protected void roundRobinNonPreemptif(ArrayList<Processus> file, int quantum, executionFrame frame) {
+        int currentTime = 0;
+        int numberOfProcess = file.size();
+
+        ArrayList<Processus> waitingList = new ArrayList<>();
+
+        DefaultTableModel processingModel = (DefaultTableModel) frame.processingTable.getModel();
+
+        while (numberOfProcess > 0) {
+
+            System.out.println("current time: " + currentTime);
+            System.out.println();
+            System.out.println("process filling phase:");
+
+            for (int i = 0; i < file.size(); i++) {
+                //if the processus are arriving
+                if (file.get(i).getArriveTime() <= currentTime && !file.get(i).isPassed()) {
+                    System.out.println("the processus " + file.get(i).getName() + " was added to the waiting list");
+                    waitingList.add(file.get(i));
+                    file.get(i).setPassed(true);
+                    String[] a = {"P " + String.valueOf(file.get(i).getName()), String.valueOf(currentTime)};
+                    processingModel.addRow(a);
                 }
             }
 
@@ -268,6 +461,12 @@ public class Algorithmes {
                 } else {
                     System.out.println("processus " + waitingList.get(0).getName() + " has left the system");
                     --numberOfProcess;
+                    int indexOfProcessLeaving = 0;
+                    while (waitingList.get(0).getName() != file.get(indexOfProcessLeaving).getName()) {
+                        ++indexOfProcessLeaving;
+                    }
+
+                    processingModel.setValueAt("" + currentTime, indexOfProcessLeaving, 2);
                     waitingList.remove(0);
                 }
 

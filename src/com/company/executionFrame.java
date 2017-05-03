@@ -7,6 +7,7 @@ package com.company;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -15,14 +16,14 @@ import javax.swing.table.DefaultTableModel;
 
 public class executionFrame extends JFrame {
 
-    public JLabel lblTempsActuel;
+    private JScrollPane jScrollPane1;
+    public JTable waitingTable;
+    public JTable processingTable;
     public JPanel contentPane;
     public int choiceOfAlgo;
     public int quantum;
-    public JTable originalList;
-    public JTable waitingList;
-    public JTable processingList;
     public static ArrayList<Processus> file;
+    boolean preemptif = false;
 
     /**
      * Launch the application.
@@ -53,16 +54,26 @@ public class executionFrame extends JFrame {
                 algorithmes.firstComeFirstServe(algorithmes.file, this);
                 break;
             case 1:
-                System.out.println("shortest job");
-                algorithmes.shortJobFirst(algorithmes.file);
+                if (preemptif) {
+                    System.out.println("shortest job Preemptif");
+                    algorithmes.shortJobFirstPreemptif(algorithmes.file, this);
+                } else {
+                    System.out.println("shortest job non Preemtif");
+                    algorithmes.shortJobFirstNoPreemptif(algorithmes.file, this);
+                }
                 break;
             case 2:
                 System.out.println("round robin");
                 algorithmes.roundRobinNonPreemptif(algorithmes.file, quantum);
                 break;
             case 3:
-                System.out.println("priority");
-                algorithmes.priorityNonPremptif(algorithmes.file);
+                if (preemptif) {
+                    System.out.println("priority Preemptif");
+                    algorithmes.priorityPremptif(algorithmes.file, this);
+                } else {
+                    System.out.println("priority non preemptif");
+                    algorithmes.priorityNonPremptif(algorithmes.file, this);
+                }
                 break;
             default:
                 System.out.println("default");
@@ -72,10 +83,11 @@ public class executionFrame extends JFrame {
 
     }
 
-    public executionFrame(ArrayList<Processus> file, int choiceOfAlgo, int quantum) {
+    public executionFrame(ArrayList<Processus> file, int choiceOfAlgo, int quantum, boolean preemptif) {
         this.file = file;
         this.choiceOfAlgo = choiceOfAlgo;
         this.quantum = quantum;
+        this.preemptif = preemptif;
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1020, 610);
@@ -88,55 +100,41 @@ public class executionFrame extends JFrame {
         contentPane.add(panel, BorderLayout.CENTER);
         panel.setLayout(null);
 
-        originalList = new JTable();
-        originalList.setModel(new DefaultTableModel(
+        waitingTable = new JTable();
+        waitingTable.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[][]{
+
+                },
+                new String[]{
+                        "N° Processus", "Temps d'arrivé", "T CPU", "Priorité "
+                }
+        ));
+
+
+        waitingTable.setBounds(32, 67, 439, 427);
+        panel.add(waitingTable);
+
+
+        processingTable = new JTable();
+        processingTable.setModel(new DefaultTableModel(
                 new Object[][]{
                 },
                 new String[]{
-                        "New column"
+                        "nom Processus", "temps début", "temps fin"
                 }
         ));
-        originalList.setBounds(12, 67, 123, 200);
-        panel.add(originalList);
+        processingTable.setBounds(518, 67, 439, 427);
+        panel.add(processingTable);
 
-        waitingList = new JTable();
-        waitingList.setModel(new DefaultTableModel(
-                new Object[][]{
-                },
-                new String[]{
-                        "New column", "New column", "New column", "New column", "New column"
-                }
-        ));
-        waitingList.setBounds(225, 67, 689, 174);
-        panel.add(waitingList);
+        JButton btnAccelrer = new JButton("Accel\u00E9rer");
+        btnAccelrer.setBounds(817, 515, 97, 25);
+        panel.add(btnAccelrer);
 
-        processingList = new JTable();
-        processingList.setModel(new DefaultTableModel(
-                new Object[][]{
-                },
-                new String[]{
-                        "New column", "New column", "New column", "New column", "New column"
-                }
-        ));
-        processingList.setBounds(225, 283, 689, 200);
-        panel.add(processingList);
-
-        JLabel lblListeTotal = new JLabel("Liste Total");
-        lblListeTotal.setHorizontalAlignment(SwingConstants.CENTER);
-        lblListeTotal.setBounds(12, 38, 123, 16);
-        panel.add(lblListeTotal);
-
-        JLabel lblFileDattente = new JLabel("file d'attente");
-        lblFileDattente.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblFileDattente.setHorizontalAlignment(SwingConstants.CENTER);
-        lblFileDattente.setBounds(499, 38, 123, 16);
-        panel.add(lblFileDattente);
-
-        JLabel lblCpu = new JLabel("CPU");
-        lblCpu.setHorizontalAlignment(SwingConstants.CENTER);
-        lblCpu.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblCpu.setBounds(499, 254, 123, 16);
-        panel.add(lblCpu);
+        JLabel lblTempsActuel = new JLabel("Temps actuel:");
+        lblTempsActuel.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTempsActuel.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        lblTempsActuel.setBounds(12, 518, 166, 16);
+        panel.add(lblTempsActuel);
 
         JButton btnCommencez = new JButton("Commencez");
         btnCommencez.addActionListener(new ActionListener() {
@@ -147,21 +145,26 @@ public class executionFrame extends JFrame {
         btnCommencez.setBounds(225, 515, 103, 25);
         panel.add(btnCommencez);
 
-        JButton btnAccelrer = new JButton("Accel\u00E9rer");
-        btnAccelrer.setBounds(817, 515, 97, 25);
-        panel.add(btnAccelrer);
+        JLabel lblListeDattente = new JLabel("Liste d'attente");
+        lblListeDattente.setFont(new Font("Tahoma", Font.BOLD, 16));
+        lblListeDattente.setHorizontalAlignment(SwingConstants.CENTER);
+        lblListeDattente.setBounds(191, 38, 128, 16);
+        panel.add(lblListeDattente);
 
-        lblTempsActuel = new JLabel("Temps actuel:");
-        lblTempsActuel.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTempsActuel.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblTempsActuel.setBounds(12, 518, 166, 16);
-        panel.add(lblTempsActuel);
+        JLabel lblListeCpu = new JLabel("Liste CPU");
+        lblListeCpu.setHorizontalAlignment(SwingConstants.CENTER);
+        lblListeCpu.setFont(new Font("Tahoma", Font.BOLD, 16));
+        lblListeCpu.setBounds(685, 38, 128, 16);
+        panel.add(lblListeCpu);
 
-         DefaultTableModel model = (DefaultTableModel) originalList.getModel();
+        DefaultTableModel model = (DefaultTableModel) waitingTable.getModel();
+
         for (int i = 0; i < file.size(); i++) {
-            Object[] a = {"Processus " +file.get(i).getName()};
+            String[] a = {"P " + String.valueOf(file.get(i).getName()), String.valueOf(file.get(i).getArriveTime()), String.valueOf(file.get(i).getCpuTime()), String.valueOf(file.get(i).getPriority())};
             model.addRow(a);
         }
+
+
     }
 }
 
