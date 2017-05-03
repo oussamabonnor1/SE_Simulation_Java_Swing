@@ -156,13 +156,13 @@ public class executionFrame extends JFrame {
         JLabel lblListeDattente = new JLabel("Liste d'attente");
         lblListeDattente.setFont(new Font("Tahoma", Font.BOLD, 16));
         lblListeDattente.setHorizontalAlignment(SwingConstants.CENTER);
-        lblListeDattente.setBounds(191, 38, 128, 16);
+        lblListeDattente.setBounds(191, 13, 128, 16);
         panel.add(lblListeDattente);
 
         JLabel lblListeCpu = new JLabel("Liste CPU");
         lblListeCpu.setHorizontalAlignment(SwingConstants.CENTER);
         lblListeCpu.setFont(new Font("Tahoma", Font.BOLD, 16));
-        lblListeCpu.setBounds(685, 38, 128, 16);
+        lblListeCpu.setBounds(685, 13, 128, 16);
         panel.add(lblListeCpu);
 
         DefaultTableModel model = (DefaultTableModel) waitingTable.getModel();
@@ -173,6 +173,47 @@ public class executionFrame extends JFrame {
         }
 
 
+        JLabel lblNomProcessus = new JLabel("Nom Processus");
+        lblNomProcessus.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblNomProcessus.setHorizontalAlignment(SwingConstants.CENTER);
+        lblNomProcessus.setBounds(32, 46, 110, 16);
+        panel.add(lblNomProcessus);
+
+        JLabel lblTempDarriv = new JLabel("Temp d'arriv\u00E9");
+        lblTempDarriv.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTempDarriv.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblTempDarriv.setBounds(141, 47, 110, 16);
+        panel.add(lblTempDarriv);
+
+        JLabel lblTempCpu = new JLabel("Temp CPU");
+        lblTempCpu.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTempCpu.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblTempCpu.setBounds(252, 47, 110, 16);
+        panel.add(lblTempCpu);
+
+        JLabel lblPriorit = new JLabel("Priorit\u00E9");
+        lblPriorit.setHorizontalAlignment(SwingConstants.CENTER);
+        lblPriorit.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblPriorit.setBounds(361, 47, 110, 16);
+        panel.add(lblPriorit);
+
+        JLabel lblNomProcessus_1 = new JLabel("Nom Processus");
+        lblNomProcessus_1.setHorizontalAlignment(SwingConstants.CENTER);
+        lblNomProcessus_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblNomProcessus_1.setBounds(537, 47, 110, 16);
+        panel.add(lblNomProcessus_1);
+
+        JLabel lblTempsDeCommencement = new JLabel("Temps de d\u00E9but");
+        lblTempsDeCommencement.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTempsDeCommencement.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblTempsDeCommencement.setBounds(659, 46, 152, 16);
+        panel.add(lblTempsDeCommencement);
+
+        JLabel lblTempsDeFin = new JLabel("Temps de Fin");
+        lblTempsDeFin.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTempsDeFin.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblTempsDeFin.setBounds(828, 47, 110, 16);
+        panel.add(lblTempsDeFin);
     }
 }
 
