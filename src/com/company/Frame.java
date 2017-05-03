@@ -2,13 +2,19 @@ package com.company;
 
 import java.awt.*;
 
+import javax.jnlp.FileContents;
+import javax.jnlp.FileOpenService;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 import javax.swing.border.LineBorder;
 
 public class Frame extends JFrame {
@@ -18,8 +24,8 @@ public class Frame extends JFrame {
     public JTextField cpuTimeField;
     public JTextField priorityTextField;
     public JTextField quantumField;
-    JCheckBoxMenuItem chckbxmntmAvecPriority;
     public JTable table;
+    //count is for the process's number tracking while adding them to a list based on the user's wishes (unpredictable)
     int count;
     int choiceOfAlgo;
 
@@ -57,25 +63,84 @@ public class Frame extends JFrame {
             public void actionPerformed(ActionEvent arg0) {
                 Random r = new Random();
                 DefaultTableModel model = (DefaultTableModel) table.getModel();
-                for (int i = 0; i < 5; i++) {
-                    Processus p = new Processus(i + 1, r.nextInt(4), r.nextInt(5) + 1, r.nextInt(3), false);
+
+                int count = table.getRowCount();
+                for (int i = count; i < count + 5; i++) {
+                    Processus p = new Processus(i + 1, r.nextInt(11), r.nextInt(8) + 1, r.nextInt(4) + 1, false);
                     String[] a = {String.valueOf(p.getName()), "" + p.getArriveTime(), "" + p.getCpuTime(), "" + p.getPriority()};
                     model.addRow(a);
                 }
+
+                quantumField.setText("" + (r.nextInt(3) + 1));
             }
         });
         mnDonnes.add(mntmDonnesAlatoires);
 
         JMenuItem mntmNewMenuItem = new JMenuItem("Donn\u00E9es a partir de fichier");
+        mntmNewMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                final JFileChooser fc = new JFileChooser();
+                int returnVal = fc.showOpenDialog(Frame.this);
+
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    File theFile = fc.getSelectedFile();
+                    Scanner sc = null;
+                    String s;
+                    try {
+                        sc = new Scanner(theFile);
+                    } catch (FileNotFoundException ex) {
+                        ex.printStackTrace();
+                    }
+                    int row = 0;
+                    int column = 0;
+                    while (sc.hasNextLine()) {
+                        s = sc.next();
+
+                        if (column == 0) {
+                            String[] a = {"P" + (row + 1)};
+                            model.addRow(a);
+                            ++column;
+                        }
+                        if (column % 3 == 0 && column > 0) {
+                            model.setValueAt(s, row, column);
+                            ++row;
+                            column = 0;
+                        } else {
+                            model.setValueAt(s, row, column);
+                            ++column;
+                        }
+                    }
+                } else {
+
+                }
+
+
+            }
+        });
         mnDonnes.add(mntmNewMenuItem);
 
-        JMenuItem mntmDonnesDirectes = new JMenuItem("Donn\u00E9es directes");
-        mnDonnes.add(mntmDonnesDirectes);
-
         JMenuItem mntmRnitialiserLesDonnes = new JMenuItem("R\u00E9nitialiser les Donn\u00E9es");
+        mntmRnitialiserLesDonnes.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+
+                while (model.getRowCount() > 0) {
+                    model.removeRow(0);
+                }
+
+                quantumField.setText("");
+            }
+        });
         mnDonnes.add(mntmRnitialiserLesDonnes);
 
         JMenuItem mntmQuitter = new JMenuItem("Quitter");
+        mntmQuitter.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
         mnDonnes.add(mntmQuitter);
 
         JMenu mnOptions = new JMenu("Options");
@@ -116,8 +181,6 @@ public class Frame extends JFrame {
         });
         mnAlgorithmes.add(mntmPriority);
 
-        chckbxmntmAvecPriority = new JCheckBoxMenuItem("Avec priority");
-        mnOptions.add(chckbxmntmAvecPriority);
 
         JCheckBoxMenuItem chckbxmntmPreemptivit = new JCheckBoxMenuItem("Preemptivit\u00E9");
         mnOptions.add(chckbxmntmPreemptivit);
@@ -245,6 +308,30 @@ public class Frame extends JFrame {
         btnCommencez.setBounds(666, 361, 175, 25);
         panel.add(btnCommencez);
 
+
+        JLabel label = new JLabel("Temps d'arriv\u00E9");
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setFont(new Font("Rockwell", Font.PLAIN, 15));
+        label.setBounds(628, 72, 105, 25);
+        panel.add(label);
+
+        JLabel label_1 = new JLabel("Temps CPU");
+        label_1.setHorizontalAlignment(SwingConstants.CENTER);
+        label_1.setFont(new Font("Rockwell", Font.PLAIN, 15));
+        label_1.setBounds(745, 72, 84, 25);
+        panel.add(label_1);
+
+        JLabel label_2 = new JLabel("Priorit\u00E9");
+        label_2.setHorizontalAlignment(SwingConstants.CENTER);
+        label_2.setFont(new Font("Rockwell", Font.PLAIN, 15));
+        label_2.setBounds(857, 72, 76, 25);
+        panel.add(label_2);
+
+        JLabel label_3 = new JLabel("Processus: ");
+        label_3.setHorizontalAlignment(SwingConstants.CENTER);
+        label_3.setFont(new Font("Rockwell", Font.PLAIN, 15));
+        label_3.setBounds(529, 72, 87, 25);
+        panel.add(label_3);
     }
 
 

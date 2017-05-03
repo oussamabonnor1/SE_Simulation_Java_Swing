@@ -30,9 +30,7 @@ public class Algorithmes {
                 if (file.get(i).getArriveTime() <= currentTime && !file.get(i).isPassed()) {
                     waitingList.add(file.get(i));
                     file.get(i).setPassed(true);
-                    System.out.println("the processus " + (i + 1) + " was added to the waiting list");
-                    String[] a = {"P " + String.valueOf(file.get(i).getName()), String.valueOf(currentTime)};
-                    processingModel.addRow(a);
+                    processingModel.setValueAt("" + currentTime, i, 1);
                 }
             }
             System.out.println();
@@ -102,8 +100,7 @@ public class Algorithmes {
                     waitingList.add(file.get(i));
                     file.get(i).setPassed(true);
 
-                    String[] a = {"P " + String.valueOf(file.get(i).getName()), String.valueOf(currentTime)};
-                    processingModel.addRow(a);
+                    processingModel.setValueAt("" + currentTime, i, 1);
                 }
             }
             System.out.println();
@@ -165,7 +162,7 @@ public class Algorithmes {
 
     }
 
-    protected void shortJobFirstNoPreemptif(ArrayList<Processus> file, executionFrame frame) {
+    protected void shortJobFirstNoPreemptif(ArrayList<Processus> file, executionFrame frame, int quantum) {
         int currentTime = 0;
         int numberOfProcess = file.size();
         ArrayList<Processus> waitingList = new ArrayList<>();
@@ -184,8 +181,7 @@ public class Algorithmes {
                     System.out.println("the processus " + file.get(i).getName() + " was added to the waiting list");
                     waitingList.add(file.get(i));
                     file.get(i).setPassed(true);
-                    String[] a = {"P " + String.valueOf(file.get(i).getName()), String.valueOf(currentTime)};
-                    processingModel.addRow(a);
+                    processingModel.setValueAt("" + currentTime, i, 1);
                 }
             }
             System.out.println();
@@ -202,14 +198,14 @@ public class Algorithmes {
                     }
                 }
 
-                currentTime += (waitingList.get(processusToPass).getCpuTime());
+                currentTime += quantum;
                 System.out.println("processus " + waitingList.get(processusToPass).getName() + " is being processed...");
-                waitingList.get(processusToPass).processing(waitingList.get(processusToPass).getCpuTime());
+                waitingList.get(processusToPass).processing(quantum);
 
                 if (waitingList.get(processusToPass).getCpuTime() <= 0) {
 
                     int indexOfProcessLeaving = 0;
-                    while (waitingList.get(0).getName() != file.get(indexOfProcessLeaving).getName()) {
+                    while (waitingList.get(processusToPass).getName() != file.get(indexOfProcessLeaving).getName()) {
                         ++indexOfProcessLeaving;
                     }
 
@@ -249,7 +245,7 @@ public class Algorithmes {
     }
 
 
-    protected void priorityNonPremptif(ArrayList<Processus> file, executionFrame frame) {
+    protected void priorityNonPremptif(ArrayList<Processus> file, executionFrame frame, int quantum) {
         int currentTime = 0;
         int numberOfProcess = file.size();
 
@@ -269,8 +265,7 @@ public class Algorithmes {
                     System.out.println("the processus " + file.get(i).getName() + " was added to the waiting list");
                     waitingList.add(file.get(i));
                     file.get(i).setPassed(true);
-                    String[] a = {"P " + String.valueOf(file.get(i).getName()), String.valueOf(currentTime)};
-                    processingModel.addRow(a);
+                    processingModel.setValueAt("" + currentTime, i, 1);
 
                 }
             }
@@ -289,9 +284,9 @@ public class Algorithmes {
                     }
                 }
 
-                currentTime += waitingList.get(processusToPass).getCpuTime();
+                currentTime += quantum;
                 System.out.println("processus " + waitingList.get(processusToPass).getName() + " is being processed...");
-                waitingList.get(processusToPass).processing(waitingList.get(processusToPass).getCpuTime());
+                waitingList.get(processusToPass).processing(quantum);
 
                 int indexOfProcessLeaving = 0;
                 while (waitingList.get(processusToPass).getName() != file.get(indexOfProcessLeaving).getName()) {
@@ -352,8 +347,7 @@ public class Algorithmes {
                     System.out.println("the processus " + file.get(i).getName() + " was added to the waiting list");
                     waitingList.add(file.get(i));
                     file.get(i).setPassed(true);
-                    String[] a = {"P " + String.valueOf(file.get(i).getName()), String.valueOf(currentTime)};
-                    processingModel.addRow(a);
+                    processingModel.setValueAt("" + currentTime, i, 1);
                 }
             }
 
@@ -437,8 +431,7 @@ public class Algorithmes {
                     System.out.println("the processus " + file.get(i).getName() + " was added to the waiting list");
                     waitingList.add(file.get(i));
                     file.get(i).setPassed(true);
-                    String[] a = {"P " + String.valueOf(file.get(i).getName()), String.valueOf(currentTime)};
-                    processingModel.addRow(a);
+                    processingModel.setValueAt("" + currentTime, i, 1);
                 }
             }
 

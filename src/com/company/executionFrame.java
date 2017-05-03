@@ -59,12 +59,12 @@ public class executionFrame extends JFrame {
                     algorithmes.shortJobFirstPreemptif(algorithmes.file, this);
                 } else {
                     System.out.println("shortest job non Preemtif");
-                    algorithmes.shortJobFirstNoPreemptif(algorithmes.file, this);
+                    algorithmes.shortJobFirstNoPreemptif(algorithmes.file, this, quantum);
                 }
                 break;
             case 2:
                 System.out.println("round robin");
-                algorithmes.roundRobinNonPreemptif(algorithmes.file, quantum,this);
+                algorithmes.roundRobinNonPreemptif(algorithmes.file, quantum, this);
                 break;
             case 3:
                 if (preemptif) {
@@ -72,7 +72,7 @@ public class executionFrame extends JFrame {
                     algorithmes.priorityPremptif(algorithmes.file, this);
                 } else {
                     System.out.println("priority non preemptif");
-                    algorithmes.priorityNonPremptif(algorithmes.file, this);
+                    algorithmes.priorityNonPremptif(algorithmes.file, this, quantum);
                 }
                 break;
             default:
@@ -139,6 +139,14 @@ public class executionFrame extends JFrame {
         JButton btnCommencez = new JButton("Commencez");
         btnCommencez.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
+
+                DefaultTableModel model = (DefaultTableModel) processingTable.getModel();
+
+                for (int i = 0; i < file.size(); i++) {
+                    String[] a = {"P " + String.valueOf(file.get(i).getName())};
+                    model.addRow(a);
+                }
+
                 makeStuffWork();
             }
         });
