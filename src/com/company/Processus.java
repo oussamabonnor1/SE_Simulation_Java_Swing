@@ -10,7 +10,15 @@ public class Processus {
     private int priority;
     private int name;
     private boolean passed;
+    private int exitTime;
 
+    public int getExitTime() {
+        return exitTime;
+    }
+
+    public void setExitTime(int exitTime) {
+        this.exitTime = exitTime;
+    }
 
     public int getName() {
         return name;

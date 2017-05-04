@@ -19,6 +19,8 @@ public class executionFrame extends JFrame {
     public JTable processingTable;
     public JPanel contentPane;
     public JLabel lblAlgorithmeUtilis;
+    JLabel lblTempsDattente;
+    JLabel lblLeTurnAround;
     public int choiceOfAlgo;
     public int quantum;
     public static ArrayList<Processus> file;
@@ -79,6 +81,24 @@ public class executionFrame extends JFrame {
                 algorithmes.firstComeFirstServe(algorithmes.file, this);
                 break;
         }
+
+        float turnAround = 0;
+        float waitingTime = 0;
+
+        DefaultTableModel model = (DefaultTableModel) processingTable.getModel();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            waitingTime += Integer.valueOf(String.valueOf(model.getValueAt(i, 2))) - Integer.valueOf(String.valueOf(model.getValueAt(i, 1)));
+        }
+        waitingTime /= model.getRowCount();
+        lblTempsDattente.setText(lblTempsDattente.getText() + " " + waitingTime);
+
+        for (int i = 0; i < file.size(); i++) {
+            turnAround += file.get(i).getExitTime() - file.get(i).getArriveTime();
+        }
+        turnAround /= file.size();
+        lblLeTurnAround.setText(lblLeTurnAround.getText() + ": " + turnAround);
+
 
     }
 
@@ -246,6 +266,16 @@ public class executionFrame extends JFrame {
         lblAlgorithmeUtilis.setFont(new Font("Tahoma", Font.BOLD, 16));
         lblAlgorithmeUtilis.setBounds(32, 514, 500, 25);
         panel.add(lblAlgorithmeUtilis);
+
+        lblTempsDattente = new JLabel("Temps d'attente");
+        lblTempsDattente.setFont(new Font("Tahoma", Font.BOLD, 16));
+        lblTempsDattente.setBounds(124, 408, 281, 25);
+        panel.add(lblTempsDattente);
+
+        lblLeTurnAround = new JLabel("Le Turn Around:");
+        lblLeTurnAround.setFont(new Font("Tahoma", Font.BOLD, 16));
+        lblLeTurnAround.setBounds(124, 454, 281, 25);
+        panel.add(lblLeTurnAround);
     }
 }
 

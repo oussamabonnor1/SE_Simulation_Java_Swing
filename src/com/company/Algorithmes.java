@@ -48,6 +48,7 @@ public class Algorithmes {
                 }
 
                 processingModel.setValueAt("" + currentTime, indexOfProcessLeaving, 2);
+                file.get(0).setExitTime(currentTime);
 
                 waitingList.remove(0);
                 --numberOfProcess;
@@ -128,6 +129,7 @@ public class Algorithmes {
                     }
 
                     System.out.println("processus " + waitingList.get(processusToPass).getName() + " left the system");
+                    file.get(processusToPass).setExitTime(currentTime);
                     waitingList.remove(processusToPass);
                     --numberOfProcess;
 
@@ -210,6 +212,7 @@ public class Algorithmes {
                     }
 
                     System.out.println("processus " + waitingList.get(processusToPass).getName() + " left the system");
+                    file.get(processusToPass).setExitTime(currentTime);
                     waitingList.remove(processusToPass);
                     --numberOfProcess;
 
@@ -294,6 +297,7 @@ public class Algorithmes {
                 }
 
                 processingModel.setValueAt("" + currentTime, indexOfProcessLeaving, 2);
+                file.get(processusToPass).setExitTime(currentTime);
 
                 System.out.println("processus " + waitingList.get(processusToPass).getName() + " left the system");
                 --numberOfProcess;
@@ -376,6 +380,7 @@ public class Algorithmes {
                     }
 
                     processingModel.setValueAt("" + currentTime, indexOfProcessLeaving, 2);
+                    file.get(processusToPass).setExitTime(currentTime);
 
                     System.out.println("processus " + waitingList.get(processusToPass).getName() + " left the system");
                     waitingList.remove(processusToPass);
@@ -459,6 +464,7 @@ public class Algorithmes {
                     }
 
                     processingModel.setValueAt("" + currentTime, indexOfProcessLeaving, 2);
+                    file.get(0).setExitTime(currentTime);
                     waitingList.remove(0);
                 }
 
